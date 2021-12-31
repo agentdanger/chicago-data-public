@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: crime-data-zipfinder-cj
+  namespace: api-service
+spec:
+  schedule: "0 3 * * SUN"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: crime-data-zipfinder-cj
+            image: usfinthere/crime_zip_finder:latest
+            imagePullPolicy: Always
+            envFrom:
+            - secretRef:
+                name: postgres-secret
+            command: ['/bin/sh', '-c', 'python create_tt_crime_w_zip.py']
+          restartPolicy: OnFailure
+          imagePullSecrets:
+          - name: regcred
