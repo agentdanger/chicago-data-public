@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment                                
+metadata:
+  name: fullstack-postgres                      
+  labels:                                      
+    app: fullstack-postgres
+spec:
+  selector:
+    matchLabels:  
+      app: fullstack-postgres
+      tier: postgres
+  replicas: 1
+  template:                                 
+    metadata:
+      labels:                       
+        app: fullstack-postgres
+        tier: postgres
+    spec:                                  
+      containers:
+        - image: postgres:latest # we'll always install and use the latest postgresql version when restarting or upgrading this pod
+          name: postgres
+          imagePullPolicy: "IfNotPresent"
+          envFrom:   # this is how we'll reference secrets in our environment
+            - secretRef:
+                name: postgres-secret
+            
+          ports:
+            - containerPort: 5432   
+              name: postgres
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-persistent-storage 
+      volumes: 
+        - name: postgres-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim

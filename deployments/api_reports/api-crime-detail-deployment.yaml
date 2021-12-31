@@ -1,0 +1,32 @@
+apiVersion: apps/v1 
+kind: Deployment                                 
+metadata:
+  name: crime-detail-api-endpoint   
+  namespace:  api-services
+  labels:
+    app: crime-detail-api-endpoint
+spec:
+  replicas: 1                              
+  selector:
+    matchLabels: 
+      app: crime-detail-api-endpoint                # This deployment applies to any Pods matching the specified label
+  template:                                       # This deployment will create a set of pods using the configurations in this template
+    metadata:
+      labels:                                     # The labels that will be applied to all of the pods in this deployment
+        app: crime-detail-api-endpoint
+    spec:                                         # Spec for the container which will run in the Pod
+      containers:
+      - name: crime-detail-api-endpoint
+        image: usfinthere/crime_detail_api:latest         # The image we are getting from dockerhub
+        imagePullPolicy: Always             # If we have not pulled it before, get it from dockerhub
+        envFrom:
+            - secretRef:
+                name: postgres-secret
+        ports:
+          - name: http
+            containerPort: 8080                   # Should match the port number that the Go application listens on
+      imagePullSecrets:
+          - name: regcred
+
+        
+

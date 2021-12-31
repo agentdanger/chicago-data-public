@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: crime-data-service-cj
+  namespace: api-sniffers
+spec:
+  schedule: "*/4 * * * *"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: crime-data-service-cj
+            image: usfinthere/crime_data_service:latest
+            imagePullPolicy: Always
+            envFrom:
+            - secretRef:
+                name: postgres-secret
+            command: ['/bin/sh', '-c', 'go run crime_data_api.go']
+          restartPolicy: OnFailure
+          imagePullSecrets:
+          - name: regcred

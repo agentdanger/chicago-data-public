@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume 
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: fullstack-postgres
+spec:
+  storageClassName: manual 
+  capacity:
+    storage: 10Gi # we'll be supporting all microservices so let's allocate 10 gigabytes of storage.
+  accessModes:
+    - ReadWriteMany
+  hostPath: 
+    path: "/mnt/data"
+  persistentVolumeReclaimPolicy: Retain 

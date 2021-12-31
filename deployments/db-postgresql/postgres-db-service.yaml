@@ -1,0 +1,13 @@
+apiVersion: v1     
+kind: Service 
+metadata:
+  name: fullstack-postgres        
+  labels:                           
+    app: fullstack-postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:                                   
+    app: fullstack-postgres
+    tier: postgres
